@@ -1,1 +1,2 @@
-# The-simulation-and-emulation-for-oscillatory-singular-integral-
+# The-simulation-and-emulation-for-oscillatory-singular-integral
+首先运用最速下降法将振荡奇异积分转化为非振荡且呈指数级衰减的积分，再利用Gauss-Laguerre求积公式高效逼近振荡奇异积分，得到振荡奇异积分数值求积公式。利用Matlab在求积公式的基础上实现振荡奇异积分的求积算法，通过Matlab GUI实现对一次振荡奇异积分和二次振荡奇异积分数值求积的模拟与仿真，并结合具体实例对求积公式的正确性进行验证，通过与经典数值求积方法进行对比的实验显示求积公式的良好逼近效果，实验结果与理论分析相符。
