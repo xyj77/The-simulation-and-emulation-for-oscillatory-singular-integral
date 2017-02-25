@@ -3,8 +3,8 @@
 
 
 振荡奇异求积模拟与仿真（最低版本MATLAB2013环境下运行）
-M文件：
 
+M文件：
 	Ak:		计算Gauss-Laguerre求积系数；	
         Cnm：		组合数；	
         Draw：		绘图；	
@@ -22,7 +22,6 @@ M文件：
         Welcome：	系统入口；
         
 界面说明：
-
 	File->Open:	打开文件；	
         File->New:	新建文件；	
         样例：		一次积分两个示例
