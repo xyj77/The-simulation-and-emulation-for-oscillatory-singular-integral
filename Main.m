@@ -94,9 +94,12 @@ function Help_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % hFont = uisetfont();
 % mycolor = uisetcolor();
-h=dialog('name','帮助...','position',[700 400 250 120]);  
-uicontrol('parent',h,'style','text','string','一次振荡奇异积分数值计算','position',[0 70 250 30],'fontsize',14); 
-uicontrol('parent',h,'style','pushbutton','position',[100 10 60 35],'string','确定','callback','delete(gcbf)','fontsize',10);  
+% h=dialog('name','帮助...','position',[700 400 250 120]);  
+% uicontrol('parent',h,'style','text','string','一次振荡奇异积分数值计算','position',[0 70 250 30],'fontsize',14); 
+% uicontrol('parent',h,'style','pushbutton','position',[100 10 60 35],'string','确定','callback','delete(gcbf)','fontsize',10);  
+% file = uigetfile('*.txt');
+% open(file);
+open Readme.txt;
 
 % --------------------------------------------------------------------
 function About_Callback(hObject, eventdata, handles)
@@ -104,7 +107,7 @@ function About_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 h=dialog('name','关于...','position',[700 400 250 140]);  
-uicontrol('parent',h,'style','text','string','武汉工程大学','position',[50 100 120 20],'fontsize',14); 
+uicontrol('parent',h,'style','text','string','WIT','position',[50 100 120 20],'fontsize',14); 
 uicontrol('parent',h,'style','text','string','计算机科学与工程学院','position',[44 60 180 20],'fontsize',12); 
 uicontrol('parent',h,'style','pushbutton','position',[100 10 60 35],'string','确定','callback','delete(gcbf)','fontsize',10);  
 
@@ -147,7 +150,8 @@ lw=length(w);
 ln=length(n);
 global Er;
 Er=zeros(lw,ln);                   %误差表
-
+global Er_gk;
+Er_gk=zeros(lw,1);
 %进度条
 h=waitbar(0,'开始计算','Position',[500 300 275 60],'Name','计算进度...');
 % pause(1);
@@ -167,7 +171,9 @@ for a=1:lw
         task=task+100/12;
         waitbar(task/100,h,['已完成' num2str(task) '%']);
         Er(a,b)=I_ErExp(f,w(a),n(b),t,tag);%计算误差 
-    end    
+    end
+%     [ I_gk ,Er_gk]=quadgk(f,-1,1,'AbsTol',1e-20,'RelTol',1e-10);
+%     [I_gk,Er_gk(a)]=quadgk(f,-1,1);
 end
 close(h);
 
@@ -180,10 +186,13 @@ if ~isequal(v,0)                        %判断实部虚部
     else
         f1=@(x)sin(w.*x).*exp(x)./(x-t);
 end
+legend off;
 ezplot(f1,[-1,1]),legend('w=64'),grid on;
 w=[8,16,32,64];
 
 %计算Rate
+Er(4,2)=Er(4,2);
+Er(4,3)=Er(4,3);
 Rate=log(Er(3,:)./Er(4,:))./log(2);
 e=[Er;Rate];
 
@@ -225,7 +234,8 @@ lw=length(w);
 ln=length(n);                 
 global Er; %误差表
 Er=zeros(lw,ln);
-
+global Er_gk;
+Er_gk=zeros(lw,1);
 %进度条
 h=waitbar(0,'开始计算','Position',[500 300 275 60],'Name','计算进度...');
 % pause(1);
@@ -245,7 +255,8 @@ for a=1:lw
         task=task+100/12;
         waitbar(task/100,h,['已完成' num2str(task) '%']);
         Er(a,b)=I_ErSinh(f,w(a),n(b),t,tag);%计算误差    
-    end    
+    end
+%     [I_gk,Er_gk(a)]=quadgk(f,-1,1);
 end
 close(h);
 
@@ -258,11 +269,16 @@ if ~isequal(v,0)                        %判断实部虚部
     else
         f1=@(x)sin(w.*x).*sinh(x)./(x-t);
 end
+legend off;
 ezplot(f1,[-1,1]),legend('w=128'),grid on;
 w=[16,32,64,128];
 
 %计算Rate
-
+Er(2,3)=Er(2,3);
+Er(3,3)=Er(3,3);
+Er(4,1)=Er(4,1);
+Er(4,2)=Er(4,2);
+Er(4,3)=Er(4,3);
 Rate=log(Er(3,:)./Er(4,:))./log(2);
 e=[Er;Rate];
 c={ e(1,1),e(2,1),e(3,1),e(4,1),e(5,1);...
@@ -283,7 +299,7 @@ function Open_Callback(hObject, eventdata, handles)
 % hObject    handle to Open (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-file = uigetfile('*.fig');
+file = uigetfile('*.m');
 if ~isequal(file, 0)
     open(file);
 end
@@ -301,14 +317,11 @@ function Exit_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-selection = questdlg(['确定要返回主界面吗？'],...
-                     ['提示'],...
-                     'Yes','No','Yes');
+selection = questdlg('确定要返回主界面吗？','提示','Yes','No','Yes');
 if strcmp(selection,'No')
     return;
 elseif strcmp(selection,'Yes')
-    clc;
-    close;
+    clc,close;
 end
 
 
@@ -439,8 +452,8 @@ for a=1:lw
     for b=1:ln
         task=task+100/12;
         waitbar(task/100,h,['已完成' num2str(task) '%']);
-        Er(a,b)=I_Er(fun,f,w(a),n(b),t,tag,1);%计算误差     
-    end    
+        Er(a,b)=I_Er(fun,f,w(a),n(b),t,tag,1);     
+    end
 end
 close(h);
 %绘图
@@ -611,7 +624,6 @@ for a=1:4
     I_quad=quad(f3,-1,1);
     time(1,a)=toc;
     Erquad(1,a)=abs(I_quad-I);
-    
     tic;
     I_quadl=quadl(f3,-1,1);
     time(2,a)=toc;
@@ -685,6 +697,7 @@ hold off;
 plot(w,time(1,:),'-*r'),hold on;
 plot(w,time(2,:),'-^g'),hold on;
 plot(w,time(3,:),'-ob');
+% xlabel('w'),ylabel('计算时间（s）');
 legend('quad','quadl','quadgk','location','northwest');
 
 guidata(hObject, handles);
@@ -721,8 +734,10 @@ lw=length(w);
 ln=length(n);
 
 axes(handles.axes1);
+% figure;
 hold off;
 global Er;
+% global Er_gk;
 % set(0,'DefaultAxesColorOrder',[1 0 0;0 1 0;0 0 1]);
 % set(0,'DefaultAxesLineStyleOrder','-*|-^|-o');
 % for a=1:ln
@@ -735,7 +750,11 @@ global Er;
 plot(w,log(Er(:,1)'),'-*r'),hold on;
 plot(w,log(Er(:,2)'),'-^g'),hold on;
 plot(w,log(Er(:,3)'),'-ob'),hold on;
-legend('n=3','n=4','n=5');
+% plot(w,log(Er_gk),'p-c');
+% legend('n=3','n=4','n=5','quadgk','location','best');
+% xlabel('w'),ylabel('误差对数值log(Er)');
+legend('n=3','n=4','n=5','location','best');
+
 %计算Rate
 Rate=log(Er(3,:)./Er(4,:))./log(2);
 e=[Er;Rate];

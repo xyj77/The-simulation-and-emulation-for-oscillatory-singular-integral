@@ -1,11 +1,11 @@
 function y = Ak( n )
 digits(64);
 if n<=0
-    printf('n必须为正整数！');
+    fprintf('n必须为正整数！\n');
     return;
 else
 %     format long;
-    laguerre=Laguerre(n);
+    laguerre=factorial(n)*Laguerre(n);
     xk=roots(laguerre);
     %L=poly2sym(laguerre)
     L1=polyder(laguerre);

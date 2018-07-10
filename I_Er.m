@@ -65,7 +65,8 @@ function Er = I_Er( fun , f , w , n , t , tag , power )
 laguerre=Laguerre(n);
 xk=roots(laguerre);
 ak=Ak(n);                       %求Laguerre系数
-wk=ak./sum(ak);                 %求积权重
+% wk=ak./sum(ak);                 %求积权重
+wk=ak;
 Q=0;
 
 if power==1
@@ -76,13 +77,13 @@ if power==1
     end
     Q=Q+1i*exp(1i*w*t)*pi*f(t);
 
-    % 二次振荡
+% 二次振荡
 elseif power==2
     for a=1:n
-            Q=Q+(1i*exp(1i*w)/2/w)*wk(a)*f(-1*sqrt(1+1i*xk(a)/w))/(1+1i*xk(a)/w+t*sqrt(1+1i*xk(a)/w))...
-            -(1i/2/w)*wk(a)*f(-1*sqrt(1+1i*xk(a)/w))/(1i*xk(a)/w+t*sqrt(1i*xk(a)/w))...
-            -(1i*exp(1i*w)/2/w)*wk(a)*f(sqrt(1+1i*xk(a)/w))/(1+1i*xk(a)/w-t*sqrt(1+1i*xk(a)/w))...
-            +(1i/2/w)*wk(a)*f(sqrt(1i*xk(a)/w))/(1i*xk(a)/w-t*sqrt(1i*xk(a)/w));
+            Q=Q+(1i*exp(1i*w)/(2*w))*wk(a)*f(-1*sqrt(1+1i*xk(a)/w))/(1+1i*xk(a)/w+t*sqrt(1+1i*xk(a)/w))...
+            -(1i/(2*w))*wk(a)*f(-1*sqrt(1i*xk(a)/w))/(1i*xk(a)/w+t*sqrt(1i*xk(a)/w))...
+            -(1i*exp(1i*w)/(2*w))*wk(a)*f(sqrt(1+1i*xk(a)/w))/(1+1i*xk(a)/w-t*sqrt(1+1i*xk(a)/w))...
+            +(1i/(2*w))*wk(a)*f(sqrt(1i*xk(a)/w))/(1i*xk(a)/w-t*sqrt(1i*xk(a)/w));
     end
     if t==0||t<-1||t>1
         Q=Q+0;
@@ -98,7 +99,7 @@ end
 
 %内置函数积分值
 % Er=abs(I_gk);
-% Er=Q;
+Er=Q;
 
 %内置函数积分误差
 % Er=abs(Er_gk);
@@ -107,12 +108,12 @@ end
 % Er=abs(imag(Q)-I);
 
 
-%显示积分结果
-if tag==1           %判断实虚部
-    Er=abs(real(Q));
-else
-    Er=abs(imag(Q));
-end
+% 显示积分结果
+% if tag==1           %判断实虚部
+%     Er=real(Q);
+% else
+%     Er=imag(Q);
+% end
 
 end
 

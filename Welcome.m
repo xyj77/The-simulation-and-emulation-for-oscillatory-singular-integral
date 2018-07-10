@@ -22,7 +22,7 @@ function varargout = Welcome(varargin)
 
 % Edit the above text to modify the response to help Welcome
 
-% Last Modified by GUIDE v2.5 19-Apr-2016 11:26:20
+% Last Modified by GUIDE v2.5 10-Jul-2018 17:26:32
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -65,6 +65,8 @@ set(h,'handlevisibility','off','visible','off');
 set(handles.power1,'value',1);
 set(handles.power2,'value',0);
 
+addpath(genpath(pwd));
+
 % set(handles.Btn_OK,'CData',i);
 % set(handles.Btn_Exit,'CData',i);
 
@@ -95,6 +97,8 @@ if isequal(get(handles.power1,'value'),1)
     Main;
 elseif isequal(get(handles.power2,'value'),1)
     Main2;
+elseif isequal(get(handles.inter,'value'),1)
+    first;
 end
 
 % --- Executes on button press in Btn_Exit.
@@ -119,6 +123,7 @@ function power1_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.power1,'value',1);
 set(handles.power2,'value',0);
+set(handles.inter,'value',0);
 % Hint: get(hObject,'Value') returns toggle state of power1
 
 
@@ -129,4 +134,16 @@ function power2_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.power1,'value',0);
 set(handles.power2,'value',1);
+set(handles.inter,'value',0);
 % Hint: get(hObject,'Value') returns toggle state of power2
+
+
+% --- Executes on button press in inter.
+function inter_Callback(hObject, eventdata, handles)
+% hObject    handle to inter (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+set(handles.power1,'value',0);
+set(handles.power2,'value',0);
+set(handles.inter,'value',1);
+% Hint: get(hObject,'Value') returns toggle state of inter

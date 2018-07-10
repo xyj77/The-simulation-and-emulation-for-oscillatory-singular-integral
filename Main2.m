@@ -22,7 +22,7 @@ function varargout = Main2(varargin)
 
 % Edit the above text to modify the response to help Main2
 
-% Last Modified by GUIDE v2.5 03-May-2016 19:29:51
+% Last Modified by GUIDE v2.5 10-May-2016 12:33:59
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -105,7 +105,7 @@ function About_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 h=dialog('name','关于...','position',[700 400 250 140]);  
-uicontrol('parent',h,'style','text','string','武汉工程大学','position',[50 100 120 20],'fontsize',14); 
+uicontrol('parent',h,'style','text','string','WIT','position',[50 100 120 20],'fontsize',14); 
 uicontrol('parent',h,'style','text','string','计算机科学与工程学院','position',[44 60 180 20],'fontsize',12); 
 uicontrol('parent',h,'style','pushbutton','position',[100 10 60 35],'string','确定','callback','delete(gcbf)','fontsize',10);  
 
@@ -185,8 +185,8 @@ ezplot(f1,[-1,1]),legend('w=64'),grid on;
 w=[8,16,32,64];
 
 %计算Rate
-Er(4,2)=Er(4,2)+1.5e-16;
-Er(4,3)=Er(4,3)-8.7e-17;
+Er(4,2)=Er(4,2);
+Er(4,3)=Er(4,3);
 Rate=log(Er(3,:)./Er(4,:))./log(2);
 e=[Er;Rate];
 
@@ -265,11 +265,6 @@ ezplot(f1,[-1,1]),legend('w=128'),grid on;
 w=[16,32,64,128];
 
 %计算Rate
-Er(2,3)=Er(2,3)-2.4e-16;
-Er(3,3)=Er(3,3)+2e-17;
-Er(4,1)=Er(4,1)+1.6e-16;
-Er(4,2)=Er(4,2)-1.312e-16;
-Er(4,3)=Er(4,3)-1.310569e-16;
 Rate=log(Er(3,:)./Er(4,:))./log(2);
 e=[Er;Rate];
 c={ e(1,1),e(2,1),e(3,1),e(4,1),e(5,1);...
@@ -436,10 +431,10 @@ for a=1:lw
     end    
     v=get(handles.Rad_Real,'Value');
     if ~isequal(v,0)                        %判断实部虚部
-        eval(['fun=@(x)','cos(w(a).*x).*',get(handles.f,'String'),'./(x-t)',';']);
+        eval(['fun=@(x)','cos(w(a).*x.^2).*',get(handles.f,'String'),'./(x-t)',';']);
         tag=1;
     else
-        eval(['fun=@(x)','sin(w(a).*x).*',get(handles.f,'String'),'./(x-t)',';']);
+        eval(['fun=@(x)','sin(w(a).*x.^2).*',get(handles.f,'String'),'./(x-t)',';']);        
         tag=0;
     end
     eval(['f=@(x)',get(handles.f,'String'),';']);
@@ -453,7 +448,15 @@ close(h);
 %绘图
 axes(handles.axes1);
 legend off;
-ezplot(fun,[-1,1]),grid on;
+w=128;
+if ~isequal(v,0)                        %判断实部虚部
+        f=@(x)cos(w.*x.^2).*f(x)./(x-t);
+    else
+        f=@(x)sin(w.*x.^2).*f(x)./(x-t);
+end
+ezplot(f,[-1,1]),legend('w=128'),grid on;
+w=str2num(get(handles.w,'String'));
+
 %计算Rate
 % Rate=log(Er(3,:)./Er(4,:))./log(2);
 % e=[Er;Rate];
@@ -833,3 +836,111 @@ figure;
 w=1:100;
 subplot(1,2,1),plot(w,Er_5(1:100,1),'b-'),xlabel('w'),ylabel('5点Gauss-legendre求积公式误差'),legend('n=5');
 subplot(1,2,2),plot(w,Er_10(1:100,1),'r-'),xlabel('w'),ylabel('10点Gauss-legendre求积公式误差'),legend('n=10');
+
+
+% --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% --- Otherwise, executes on mouse press in 5 pixel border or over Start.
+function Start_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to Start (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+if isempty(get(handles.w,'String'))         %获取震荡速率w
+    msgbox('    请输入 w 的值！','提示','help');
+    return;
+else
+    w=str2num(get(handles.w,'String'));
+end
+if isempty(get(handles.t,'String'))         %判断t是否为空
+    msgbox('    请输入 t 的值！','提示','help');
+    return;
+else
+    t=str2num(get(handles.t,'String'));
+end
+if isempty(get(handles.n,'String'))         %获取n值
+    msgbox('    请输入 n 的值！','提示','help');
+    return;
+else
+    n=str2num(get(handles.n,'String'));
+%     if isnan(n)         %判断是否是实数
+%        errodlg('必须输入整数！','Error','modal');
+%        return;          %跳出一个对话框
+%     end
+end
+
+lw=length(w);
+ln=length(n);
+Er=zeros(lw,ln);                   %误差表
+
+%进度条
+h=waitbar(0,'开始计算','Position',[500 300 275 60],'Name','计算进度...');
+% pause(1);
+hac=get(get(h,'children'),'children');
+hapa=findall(hac,'type','patch');
+set(hapa,'EdgeColor','b','FaceColor','g');
+task=0;
+for a=1:lw
+    if isempty(get(handles.f,'String'))         %获取n值
+        msgbox('请输入非振荡非奇异部分的函数f(x)！','提示','help');
+        return;
+    end    
+    v=get(handles.Rad_Real,'Value');
+    if ~isequal(v,0)                        %判断实部虚部
+        eval(['fun=@(x)','cos(w(a).*x.*x)',get(handles.f,'String'),'./(x-t)',';']);
+        tag=1;
+    else
+        eval(['fun=@(x)','sin(w(a).*x.*x)',get(handles.f,'String'),'./(x-t)',';']);
+        tag=0;
+    end
+    eval(['f=@(x)',get(handles.f,'String'),';']);
+    for b=1:ln
+        task=task+100/12;
+        waitbar(task/100,h,['已完成' num2str(task) '%']);
+        Er(a,b)=I_Er(fun,f,w(a),n(b),t,tag,2);%计算误差     
+    end    
+end
+close(h);
+%绘图
+axes(handles.axes1);
+legend off;
+w=128;
+if ~isequal(v,0)                        %判断实部虚部
+        f=@(x)cos(w.*x.^2).*f(x)./(x-t);
+    else
+        f=@(x)sin(w.*x.^2).*f(x)./(x-t);
+end
+ezplot(f,[-1,1]),legend('w=128'),grid on;
+w=str2num(get(handles.w,'String'));
+
+%计算Rate
+% Rate=log(Er(3,:)./Er(4,:))./log(2);
+% e=[Er;Rate];
+% c={ e(1,1),e(2,1),e(3,1),e(4,1),e(5,1);...
+%     e(1,2),e(2,2),e(3,2),e(4,2),e(5,2);...
+%     e(1,3),e(2,3),e(3,3),e(4,3),e(5,3)};
+
+%设置表格
+set(handles.Table,'RowName',{ num2str(w(1)), num2str(w(2)), num2str(w(3)),num2str(w(4))});
+set(handles.Table,'ColumnName',{ num2str(n(1)), num2str(n(2)), num2str(n(3))});
+set(handles.Table,'Data',Er);             
+set(handles.Table,'UserData',Er);
+
+
+%%最速下降分析
+% axes(handles.axes1);
+% hold off;
+% global Er;
+% % set(0,'DefaultAxesColorOrder',[1 0 0;0 1 0;0 0 1]);
+% % set(0,'DefaultAxesLineStyleOrder','-*|-^|-o');
+% % for a=1:ln
+% %     str=strcat('n=',num2str(n(a)));
+% %     plot(w,log(Er(:,a)')),legend(str),hold all;
+% % end
+% % hold off;
+% % set(0,'DefaultAxesLineStyleOrder','remove');
+% % set(0,'DefaultAxesColorOrder','remove');
+% plot(w,log(Er(:,1)'),'-*r'),hold on;
+% plot(w,log(Er(:,2)'),'-^g'),hold on;
+% plot(w,log(Er(:,3)'),'-ob'),hold on;
+% legend('n=3','n=4','n=5');
+
+guidata(hObject, handles);
