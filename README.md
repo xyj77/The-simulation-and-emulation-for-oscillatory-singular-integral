@@ -8,7 +8,7 @@ MATLAB2013及以上
 运行界面：    
 <div align="center">
 
-<img align="center" width="600" src="https://github.com/xyj77/The-simulation-and-emulation-for-oscillatory-singular-integral/raw/master/runing.jpg">
+<img align="center" width="600" src="https://github.com/xyj77/The-simulation-and-emulation-for-oscillatory-singular-integral/raw/master/running.jpg">
 
 </div>
     
@@ -22,16 +22,16 @@ MATLAB2013及以上
 
 ## 界面说明：
 * 菜单栏及功能区    
-> File->Open:     打开文件;        
-> File->New:      新建文件;    	
-> 样例：     一次积分两个示例
-> 默认：     自动填充参数;    	
-> 绘图->最速下降分析:     一次算出误差后的分析误差，计算结果不需分析。
-> f(x):   输入被积函数非奇异非振荡部分;    	
-> w:      输入振荡频率（四个正整数，用“，”隔开）;    	
-> n：      输入求积节点数目（三个正整数，用“，”隔开）;    	
+> File->Open:     打开文件;    
+> File->New:      新建文件;    
+> 样例：     一次积分两个示例    
+> 默认：     自动填充参数;    
+> 绘图->最速下降分析: 一次算出误差后的分析误差，计算结果不需分析。    
+> f(x):   输入被积函数非奇异非振荡部分;    
+> w:      输入振荡频率（四个正整数，用“，”隔开）;    
+> n：      输入求积节点数目（三个正整数，用“，”隔开）;    
 > t：      输入奇异点（-1< t < 1);    
-> “清空图表”： 清空右侧数据和图形.   
+> “清空图表”： 清空右侧数据和图形.    
 
 * 文件说明：    
 > Ak:      计算Gauss-Laguerre求积系数;    
@@ -40,12 +40,12 @@ MATLAB2013及以上
 > Ei:      计算指数积分;    
 > gausslaguerre：  Gauss-Lagureer求积;    
 > gausslegendre：  Gauss-Legendre求积;    
-> I_Er：   一次、二次积分值计算;    	
-> I_ErExp：        一次示例1误差;    	
-> I_ErSinh：       一次示例2误差;    	
-> Laguerre：       生成Laguerre多项式;    	
-> Main：   一次振荡奇异积分入口;    	
-> Main2：  二次振荡奇异积分入口;    	
-> Si：     正弦积分;    	
-> Team：   二次实验;    	
-> Welcome：系统入口;     
+> I_Er：   一次、二次积分值计算;    
+> I_ErExp：        一次示例1误差;    
+> I_ErSinh：       一次示例2误差;    
+> Laguerre：       生成Laguerre多项式;    
+> Main：   一次振荡奇异积分入口;    
+> Main2：  二次振荡奇异积分入口;    
+> Si：     正弦积分;    
+> Team：   二次实验;    
+> Welcome：系统入口.    
